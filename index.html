@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
     <meta name="theme-color" content="#2196F3">
-    <title>Material UI One Page Theme</title>
+    <title>WebADB tcpip</title>
 
     <!-- CSS  -->
     <link href="css/font-awesome.min.css" type="text/css" rel="stylesheet">
@@ -28,7 +28,7 @@
     <nav id="nav_f" class="default_color" role="navigation">
         <div class="container">
             <div class="nav-wrapper">
-                <a href="#" id="logo-container" class="brand-logo">ADB tcpip</a>
+                <a href="#" id="logo-container" class="brand-logo">WebADB tcpip</a>
             </div>
         </div>
     </nav>
@@ -67,7 +67,8 @@
                     <div class="card-content">
                         <i class="mdi-image-flash-on"></i>
                         <h5 class="promo-caption">Connect</h5>
-                        <p class="light center" id="permissions">Select the device you want and make sure to grant all permissions, both
+                        <p class="light center" id="permissions">Select the device you want and make sure to grant all
+                            permissions, both
                             on
                             this device and on the target
                             device.</p>
@@ -99,10 +100,25 @@
                     <div class="card-content">
                         <i class="mdi-device-usb"></i>
                         <h5 class="promo-caption">Finished! Disconnect.</h5>
-                        <p class="light center">ADB over WiFi should now be enabled! Press here to disconnect.</p>
+                        <p class="light center">ADB over WiFi should now be enabled!</p>
+                        <p class="light center" id="your_ip"></p>
+                        <p class="light center">Press here to disconnect.</p>
                     </div>
                 </div>
 
+            </div>
+            <div class="col s12 m3 l4"> </div>
+        </div>
+        <div class="row">
+            <div class="col s12 m3 l4"> </div>
+            <div class="col s12 m6 l4">
+                <div id="force_disconnect" style="display: none"
+                     class="center card promo promo-example waves-effect waves-block waves-dark">
+                    <div class="card-content">
+                        <i class="mdi-image-flash-off"></i>
+                        <h5 class="promo-caption">Force disconnect</h5>
+                    </div>
+                </div>
             </div>
             <div class="col s12 m3 l4"> </div>
         </div>
@@ -171,7 +187,6 @@
 <script src="js/modernizr.js"></script>
 <script src="js/webadb.js"></script>
 <script src="js/init.js"></script>
-<!--<script src="js/tcpip.js"></script>-->
 
 </body>
 </html>

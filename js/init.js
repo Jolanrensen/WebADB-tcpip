@@ -303,6 +303,8 @@
     /***  TCPIP **/
     let adb;
     let webusb;
+    let deviceIP = "";
+    let devicePort = 5555;
 
     let log = (...args) => {
       if (args[0] instanceof Error) {
@@ -313,26 +315,41 @@
       // document.getElementById('log').innerText += args.join(' ') + '\n';
     };
 
+    let $disconnect = $("#disconnect");
+    let $connect = $("#connect");
+    let $connecting = $("#connecting");
+    let $connected = $("#connected");
+    let $forceDisconnect = $("#force_disconnect");
+
     function updateState(newState) {
       switch (newState) {
         case "initial":
-					$("#disconnect").hide();
-					$("#connect").show();
-					$("#permissions").text("Select the device you want and make sure to grant all permissions, both on this device and on the target device.");
+					$disconnect.hide();
+					$forceDisconnect.hide();
+					$connect.show();
+					let $permissions = $("#permissions");
+					$permissions.text("Select the device you want and make sure to grant all permissions, both on this device and on the target device.");
+					$permissions.removeClass("red-text");
 					break;
 				case "connecting":
-					$("#connect").hide();
-					$("#connecting").show();
-					$("#check-screen").text("Please check the screen of your " + webusb.device.productName + ".");
+					$connect.hide();
+          $connecting.show();
+          let $checkScreen = $("#check-screen");
+					$checkScreen.text("Please check the screen of your " + webusb.device.productName + ".");
+					$checkScreen.removeClass("red-text");
+					$forceDisconnect.show();
           break;
         case "connected":
-					$("#connecting").hide();
-					$("#connected").show();
-					$("#connected-message").text("Which port do you want to enable ADB over WiFi on?");
+          $connecting.hide();
+          $connected.show();
+          let $connectedMessage = $("#connected-message");
+					$connectedMessage.text("Which port do you want to enable ADB over WiFi on?");
+					$connectedMessage.removeClass("red-text");
           break;
         case "finished":
-					$("#connected").hide();
-					$("#disconnect").show();
+          $connected.hide();
+					$disconnect.show();
+					$("#your_ip").text(`Your device should be available at: ${deviceIP}:${devicePort}`);
           break;
       }
     }
@@ -353,10 +370,12 @@
             updateState("connecting")
           });
           updateState("connected");
+          await get_ip();
         } catch (error) {
           log(error);
-
-          $("#permissions").text(error.message + " Ensure that the USB port is not in use (i.e. adb server is running).", 6000);
+          let $permissions = $("#permissions");
+          $permissions.text(error.message + " Ensure that the USB port is not in use (i.e. adb server is running).", 6000);
+          $permissions.addClass("red-text");
           adb = null;
         }
       }
@@ -377,6 +396,7 @@
         let decoder = new TextDecoder('utf-8');
         let txt = decoder.decode(response.data);
         log(txt);
+        deviceIP = txt;
       } catch (error) {
         log(error);
       }
@@ -386,13 +406,17 @@
       try {
         if (!adb) throw new Error('Not connected');
         let port = document.getElementById('port').value;
+        devicePort = port;
         log('requesting tcpip mode on port', port);
         await adb.tcpip(port);
         log('tcpip connection ready');
         updateState("finished")
       } catch (error) {
         log(error);
-				$("#connected-message").text(error.message);
+        let $connectedMessage = $("#connected-message");
+				$connectedMessage.text(error.message);
+				$connectedMessage.addClass("red-text");
+
 				// Materialize.toast("Something went wrong: " + error.message, 6000);
 			}
     };
@@ -402,50 +426,22 @@
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    let doEverything = async () => {
-      try {
-        // webusb = await Adb.open("WebUSB");
-        // log('Initialized!');
-        // if (!webusb.isAdb()) throw new Error("Initialization failed");
-        // try {
-        //   adb = null;
-        //   adb = await webusb.connectAdb("host::", () => {
-        //     log("Please check the screen of your " + webusb.device.productName + ".");
-        //   });
-        // } catch (e) {}
-        await connect();
-        await sleep(5000);
-        if (!adb) throw new Error('Failed to connect to ADB');
-        await tcpip();
-        // log("doEverything: connected!");
-        // let port = document.getElementById('port').value;
-        // await adb.tcpip(port);
-        // log('tcpip 5555 successful!, ADB over WiFi enabled on your device');
-        await webusb.close();
-        log("disconnected from device!");
-      } catch (error) {
-        console.log(error);
-        log("Something went wrong:", error)
-      }
-    };
-
-    // let add_ui = () => {
     // Adb.Opt.use_checksum = false;
     Adb.Opt.debug = true;
     // Adb.Opt.dump = true;
-    // document.getElementById('doEverything').onclick = doEverything;
 
-    document.getElementById('connect').onclick = connect;
+    $('#connect').click(connect);
     // // document.getElementById('get_ip').onclick = get_ip;
-    document.getElementById('disconnect').onclick = disconnect;
-    document.getElementById('tcpip').onclick = tcpip;
+    $('#disconnect').click(disconnect);
+    $("#force_disconnect").click(disconnect);
+    $('#tcpip').click(tcpip);
 
     // document.getElementById('clear').onclick = () => {
     //   document.getElementById('log').innerText = '';
     // };
     // };
 
-    // document.addEventListener('DOMContentLoaded', add_ui, false);
+
 
   }); // end of document ready
 })(jQuery); // end of jQuery name space
