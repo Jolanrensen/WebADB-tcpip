@@ -147,6 +147,16 @@
         <p class="flow-text">Be careful with this tool: <a href="https://labs.mwrinfosecurity.com/blog/webusb/">What
             could possibly go
             wrong?</a>
+        <p class="flow-text">Some stuff to look out for is to TRUST NO WEBSITE THAT PROVIDES ADB, not even this one,
+            unless you can view <a href="https://github.com/Jolanrensen/WebADB-tcpip">the source</a> for yourself.
+            Websites that offer ADB capabilities that cannot be ran offline, but instead require a server, should also
+            be checked very carefully or simply be avoided. ADB is a very powerful tool and if you can't see what a
+            website is doing with it
+            or is connected to an external server, your private information could be stolen or malware could be
+            installed on your phone!
+            Even when you trust the website, check that you use YOUR OWN URL to get to the website and that the URL you
+            use to open the website does not contain any %, or > characters. Those might be a sign of a XSS attack.
+        </p>
         </p>
     </div>
 </div>
